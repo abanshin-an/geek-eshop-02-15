@@ -1,31 +1,75 @@
 package ru.geekbrains.persist.model;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "manufacturer", schema = "geekbrains")
 public class Manufacturer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "manufacturer_name", nullable = false)
-    private String manufacturerName;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
 
-    public String getManufacturerName() {
-        return manufacturerName;
+    @OneToMany(
+            mappedBy = "manufacturer",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL)
+    private List<Product> products;
+
+    public Manufacturer() {
+
     }
 
-    public void setManufacturerName(String manufacturerName) {
-        this.manufacturerName = manufacturerName;
+    public Manufacturer(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public Integer getId() {
+    public Manufacturer(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Manufacturer category = (Manufacturer) o;
+        return id.equals(category.id) &&
+                name.equals(category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

@@ -12,23 +12,12 @@ public class Store {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Lob
-    @Column(name = "store_name", nullable = false)
-    private String storeName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @OneToMany(mappedBy = "store")
     private Set<Delivery> deliveries = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "store")
-    private Set<Purchase> purchases = new LinkedHashSet<>();
-
-    public Set<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(Set<Purchase> purchases) {
-        this.purchases = purchases;
-    }
 
     public Set<Delivery> getDeliveries() {
         return deliveries;
@@ -39,11 +28,11 @@ public class Store {
     }
 
     public String getStoreName() {
-        return storeName;
+        return name;
     }
 
     public void setStoreName(String storeName) {
-        this.storeName = storeName;
+        this.name = storeName;
     }
 
     public Long getId() {
