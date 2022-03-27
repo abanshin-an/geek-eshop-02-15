@@ -66,7 +66,6 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::toProductDto);
     }
 
-
     @Override
     public Optional<ProductDto> findById(Long id) {
         return productRepository.findById(id)
@@ -109,7 +108,6 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
-
         productRepository.save(product);
     }
 

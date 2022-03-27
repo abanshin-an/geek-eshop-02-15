@@ -6,14 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.persist.PictureRepository;
-import ru.geekbrains.persist.model.Picture;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class PictureServiceImpl implements PictureService {
@@ -31,18 +34,14 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public Optional<String> getPictureContentType(long id) {
-        return pictureRepository.findById(id).map(Picture::getContentType);
-    }
-
-    @Override
-    public Optional<byte[]> getPictureDataById(long id) {
+    public Optional<PictureDto> getPictureDataById(long id) {
         return pictureRepository.findById(id)
-                .map(pic -> Paths.get(storagePath, pic.getStorageFileName()))
-                .filter(Files::exists)
-                .map(path -> {
+                .map(pic -> new PictureDto(pic.getContentType(), Paths.get(storagePath, pic.getStorageFileName())))
+                .filter(pic -> Files.exists(pic.getPath()))
+                .map(pic -> {
                     try {
-                        return Files.readAllBytes(path);
+                        pic.setData(Files.readAllBytes(pic.getPath()));
+                        return pic;
                     } catch (IOException ex) {
                         logger.error("Can't read file", ex);
                         throw new RuntimeException(ex);
@@ -60,5 +59,12 @@ public class PictureServiceImpl implements PictureService {
             throw new RuntimeException(ex);
         }
         return filename;
+    }
+
+    @Override
+    public List<Long> listPictures() {
+        return pictureRepository.findAll().stream()
+                .map(pic -> pic.getId())
+                .collect( Collectors.toList() );
     }
 }
