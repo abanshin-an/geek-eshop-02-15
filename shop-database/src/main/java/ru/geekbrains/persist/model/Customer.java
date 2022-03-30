@@ -12,9 +12,8 @@ public class Customer {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Lob
-    @Column(name = "customer_name", nullable = false)
-    private String customerName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @OneToMany(mappedBy = "customer")
     private Set<Purchase> purchases = new LinkedHashSet<>();
@@ -27,12 +26,12 @@ public class Customer {
         this.purchases = purchases;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getName() {
+        return name;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {

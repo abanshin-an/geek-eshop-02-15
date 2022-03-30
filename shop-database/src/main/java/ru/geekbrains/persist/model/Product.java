@@ -1,8 +1,8 @@
 package ru.geekbrains.persist.model;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Entity
 @Table(name = "product", schema = "geekbrains")
@@ -12,51 +12,43 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "product_name", nullable = false, unique=true)
-    private String productName;
+    @Column(name = "name", nullable = false, unique=true)
+    private String name;
 
-    @Column(name = "description", length = 4096)
+    @Column(name = "description", length = 65535)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @ManyToOne(optional = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manufacturer_id")
+    @ManyToOne(optional = false)
     private Manufacturer manufacturer;
 
-    @OneToMany(mappedBy = "product")
-    private Set<Price> prices = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "product")
-    private Set<PurchaseItem> purchaseItems = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "product" )
-    private Set<Delivery> deliveries = new LinkedHashSet<>();
-
-    public Set<Delivery> getDeliveries() {
-        return deliveries;
+    public Manufacturer getManufacturer() {
+        return manufacturer;
     }
 
-    public void setDeliveries(Set<Delivery> deliveries) {
-        this.deliveries = deliveries;
+    public void setManufacturer(Manufacturer manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    public Set<PurchaseItem> getPurchaseItems() {
-        return purchaseItems;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
+
+//    @OneToMany(mappedBy = "product")
+//    private Set<Price> prices = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL)
+    private List<Picture> pictures = new ArrayList<>();
+
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setPurchaseItems(Set<PurchaseItem> purchaseItems) {
-        this.purchaseItems = purchaseItems;
-    }
-
-    public Set<Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(Set<Price> prices) {
-        this.prices = prices;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Category getCategory() {
@@ -75,12 +67,12 @@ public class Product {
         this.description = description;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String productName) {
+        this.name = productName;
     }
 
     public Long getId() {
@@ -90,4 +82,25 @@ public class Product {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public List<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<Picture> pictures) {
+        this.pictures = pictures;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id.equals(product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

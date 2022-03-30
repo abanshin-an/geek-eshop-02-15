@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/navigation.html :: head">
+</head>
+
+<body>
+
+<nav th:replace="fragments/navigation.html :: navigation">
+</nav>
+
+<div class="container">
+    <div class="row py-2">
+        <div class="col-12">
+            <a class="btn btn-primary" th:href="@{/product/new}">Add Product</a>
+        </div>
+
+        <div class="col-12 mt-3">
+            <form class="form-inline" th:method="get">
+                <div class="form-group mb-2 mr-2">
+                    <label for="categoryId" class="sr-only">Categories</label>
+                    <select class="form-control" id="categoryId" name="categoryId">
+                        <option th:selected="${param.categoryId == null || param.categoryId[0].isBlank()}" value="-1">All</option>
+                        <option th:each="cat : ${categories}"
+                                th:text="${cat.name}"
+                                th:value="${cat.id}"
+                                th:selected="${#strings.equals((param.categoryId != null ? param.categoryId[0] : ''), #strings.toString(cat.id))}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-2 mr-2">
+                    <label for="productNameFilter" class="sr-only">Product name</label>
+                    <input type="text" class="form-control" id="productNameFilter" th:value="${productNameFilter}"
+                           name="productNameFilter" placeholder="Product name filter">
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-2">Apply</button>
+            </form>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered my-2">
+                <thead>
+                <tr>
+                    <th scope="col" >
+                        <a th:href="@{/product(categoryId=${param.categoryId}, namePattern=${param.namePattern}, page=${param.page},
+                        size=${param.size}, dir=${#strings.equals(param.dir,'asc') ? 'desc': 'asc'}, sort='id')}">
+                        <div th:replace="fragments/sort_header :: sort_header_ext ('id')")></div>
+                        </a>Id
+                    </th>
+                    <th scope="col" >
+                        <a th:href="@{/product(categoryId=${param.categoryId}, namePattern=${param.namePattern}, page=${param.page},
+                        size=${param.size}, dir=${#strings.equals(param.dir,'asc') ? 'desc': 'asc'}, sort='name')}">
+                            <div th:replace="fragments/sort_header :: sort_header_ext ('name')")></div>
+                        </a>Name
+                    </th>
+                    <th scope="col" >
+                        <a th:href="@{/product(categoryId=${param.categoryId}, namePattern=${param.namePattern}, page=${param.page},
+                        size=${param.size}, dir=${#strings.equals(param.dir,'asc') ? 'desc': 'asc'}, sort='category.name')}">
+                            <div th:replace="fragments/sort_header :: sort_header_ext ('category.name')")></div>
+                        </a>Category
+                    </th>
+                    <th scope="col" >
+                        <a th:href="@{/product(categoryId=${param.categoryId}, namePattern=${param.namePattern}, page=${param.page},
+                        size=${param.size}, dir=${#strings.equals(param.dir,'asc') ? 'desc': 'asc'}, sort='price')}">
+                            <div th:replace="fragments/sort_header :: sort_header_ext ('price')")></div>
+                        </a>Price
+                    </th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${products.hasContent()}" th:each="product: ${products.content}">
+                    <th scope="row" th:text="${product.id}">1</th>
+                    <td th:text="${product.name}">Product</td>
+                    <td th:text="${product.category.name}">Category</td>
+                    <td th:text="${product.price}">$100</td>
+                    <td>
+                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i
+                                class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:unless="${products.hasContent()}">
+                    <td colspan="4">No data</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="fragments/paginator.html :: paginator(${products}, ~{::paginatorLinkPrev}, ~{::paginatorLink}, ~{::paginatorLinkNext})">
+            <a th:fragment="paginatorLink" class="page-link"
+               th:text="${num}"
+               th:href="@{/product(nameFilter=${param.nameFilter},  minPriceFilter=${param.minPriceFilter},
+               maxPriceFilter=${param.maxPriceFilter},  page=${num}, size=${param.size},
+               sort=${param.sort}, dir=${param.dir})}">1</a>
+            <a th:fragment="paginatorLinkPrev" class="page-link"
+               th:href="@{/product(nameFilter=${param.nameFilter},  minPriceFilter=${param.minPriceFilter},
+               maxPriceFilter=${param.maxPriceFilter}, page=${T(Math).max(products.number,0)},
+               size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Previous</a>
+            <a th:fragment="paginatorLinkNext" class="page-link"
+               th:href="@{/product(nameFilter=${param.nameFilter},  minPriceFilter=${param.minPriceFilter},
+               maxPriceFilter=${param.maxPriceFilter}, page=${T(Math).max(products.number,0)},
+               size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Next</a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/scripts.html :: scripts">
+</th:block>
+
+</body>
+</html>
