@@ -25,9 +25,9 @@ public class GeekShopSwaggerConfiguration {
                                         .url("http://springdoc.org"))
                                 .contact(new Contact().name("username")
                                         .email("a2n9@mail.ru")))
-                .servers(List.of(new Server().url("http://localhost:8080")
+                .servers(List.of(new Server().url("http://localhost:8080/api/")
                                 .description("Dev service"),
-                        new Server().url("http://localhost:8082")
+                        new Server().url("http://localhost:8082/api/")
                                 .description("Beta service")));
     }
 

@@ -34,9 +34,10 @@ public class ProductController {
         this.productService = productService;
     }
     @Operation(
-            summary = "Список торавро",
+            summary = "Список товаров",
             description = "Получение списка товаров по заданному фильтру с разбиением на страницы"
     )
+
     @GetMapping("/all")
     public Page<ProductDto> findAll(
             @RequestParam("categoryId") Optional<Long> categoryId,
@@ -48,7 +49,7 @@ public class ProductController {
             @RequestParam("sort") Optional<String> sortField,
             @RequestParam("dir") Optional<String> dir
     ) {
-        return productService.findAll(
+        Page<ProductDto> p= productService.findAll(
                 categoryId,
                 namePattern,
                 minPrice,
@@ -57,14 +58,7 @@ public class ProductController {
                 size.orElse(5),
                 sortField.filter(fld -> !fld.isBlank()).orElse("id"),
                 dir);
-    }
-
-    @ExceptionHandler
-    public ModelAndView notFoundExceptionHandler(NotFoundException ex) {
-        ModelAndView modelAndView = new ModelAndView("not_found");
-        modelAndView.addObject("message", ex.getMessage());
-        modelAndView.setStatus(HttpStatus.NOT_FOUND);
-        return modelAndView;
+        return p;
     }
 
 }

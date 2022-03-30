@@ -45,11 +45,17 @@
             </table>
         </div>
 
-        <div th:replace="fragments/paginator.html :: paginator(${categories}, ~{::paginatorLink})">
+
+        <div th:replace="fragments/paginator.html :: paginator(${categories}, ~{::paginatorLinkPrev}, ~{::paginatorLink}, ~{::paginatorLinkNext})">
             <a th:fragment="paginatorLink" class="page-link"
                th:text="${num}"
-               th:href="@{/category(page=${num}, size=${data.size}, sortField=${param.sortField})}">1</a>
+               th:href="@{/manufacturer( page=${num}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">1</a>
+            <a th:fragment="paginatorLinkPrev" class="page-link"
+               th:href="@{/manufacturer(page=${T(Math).max(categories.number,0)}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Previous</a>
+            <a th:fragment="paginatorLinkNext" class="page-link"
+               th:href="@{/manufacturer(page=${T(Math).max(categories.number,0)}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Next</a>
         </div>
+        
     </div>
 </div>
 
