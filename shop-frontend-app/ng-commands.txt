@@ -1,0 +1,8 @@
+
+sudo npm install -g @angular/cli
+sudo npm i @fortawesome/fontawesome-free
+sudo npm i bootstrap@4.3.0
+
+ng new shop-frontend-app
+cd shop-frontend-appmp
+ng serve

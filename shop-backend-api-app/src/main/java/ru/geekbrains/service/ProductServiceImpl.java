@@ -19,9 +19,6 @@ import ru.geekbrains.persist.model.Category;
 import ru.geekbrains.persist.model.Picture;
 import ru.geekbrains.persist.model.Product;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -32,16 +29,11 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    private final CategoryRepository categoryRepository;
-
-    private final PictureService pictureService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository,
-                              CategoryRepository categoryRepository, PictureService pictureService) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.pictureService = pictureService;
+
     }
 
     @Override
@@ -82,37 +74,4 @@ public class ProductServiceImpl implements ProductService {
                 product.getPictures().stream().map(Picture::getId).collect(Collectors.toList()));
     }
 
-    @Override
-    @Transactional
-    public void save(ProductDto productDto) {
-        Product product = (productDto.getId() != null) ? productRepository.findById(productDto.getId())
-                .orElseThrow(() -> new NotFoundException("")) : new Product();
-        Category category = categoryRepository.findById(productDto.getCategory().getId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-
-        product.setName(productDto.getName());
-        product.setCategory(category);
-        product.setPrice(productDto.getPrice());
-        product.setDescription(productDto.getDescription());
-
-        if (productDto.getNewPicture() != null) {
-            for (MultipartFile newPicture: productDto.getNewPicture()) {
-                try {
-                    product.getPictures().add(new Picture(null,
-                            newPicture.getOriginalFilename(),
-                            newPicture.getContentType(),
-                            pictureService.createPicture(newPicture.getBytes()),
-                            product));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        productRepository.save(product);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        productRepository.deleteById(id);
-    }
 }

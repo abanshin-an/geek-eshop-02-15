@@ -1,12 +1,15 @@
 package ru.geekbrains.service;
 
+import ru.geekbrains.service.PictureDto;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface PictureService {
 
-    Optional<String> getPictureContentType(long id);
-
-    Optional<byte[]> getPictureDataById(long id);
+    Optional<PictureDto> getPictureDataById(long id);
 
     String createPicture(byte[] pictureData);
+
+    List<Long> listPictures();
 }
