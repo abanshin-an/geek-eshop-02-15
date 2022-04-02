@@ -6,18 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.geekbrains.controller.dto.ProductDto;
-import ru.geekbrains.service.CategoryService;
-import ru.geekbrains.service.ManufacturerService;
 import ru.geekbrains.service.ProductService;
 
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Optional;
 @Tag(name="Product", description="Product API description")
 @RestController
@@ -41,6 +34,7 @@ public class ProductController {
     @GetMapping("/all")
     public Page<ProductDto> findAll(
             @RequestParam("categoryId") Optional<Long> categoryId,
+            @RequestParam("manifacturerIds") Optional<ArrayList<Long>> manifacturerIds,
             @RequestParam("productNameFilter") Optional<String> namePattern,
             @RequestParam("minPrice") Optional<String> minPrice,
             @RequestParam("minPrice") Optional<String> maxPrice,
@@ -51,6 +45,7 @@ public class ProductController {
     ) {
         Page<ProductDto> p= productService.findAll(
                 categoryId,
+                manifacturerIds,
                 namePattern,
                 minPrice,
                 maxPrice,

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Product} from "../../model/product";
 import {ProductService} from "../../service/product.service";
 import {Page} from "../../model/page";
+import {Sort} from "../../model/sort";
+import {ProductFilter} from "../../model/product-filter";
 
 @Component({
   selector: 'app-product-gallery-page',
@@ -9,15 +11,17 @@ import {Page} from "../../model/page";
   styleUrls: ['./product-gallery-page.component.scss']
 })
 export class ProductGalleryPageComponent implements OnInit {
-  products: Product[]= [];
+  products : Product[] = [];
   page? : Page;
   productNameFilter? : string;
+  sort: Sort = new Sort();
 
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
     this.goToPage(1);
   }
+
   goToPage(page:number){
     this.productService.findAll(page).subscribe( res => {
       this.page = res;
@@ -25,16 +29,19 @@ export class ProductGalleryPageComponent implements OnInit {
       console.log(`Loading products ${page}`);
     }, err => {
       console.log(`Error loading products ${err}`);
-    });
+    })
   }
 
-  applyFilter(productNameFilter: string) {
-    this.productService.findAll(1, productNameFilter).subscribe( res => {
+  filterApplied($event: ProductFilter) {
+    this.productService.findAll(1, $event, this.sort).subscribe( res => {
       this.page = res;
       this.products = res.content;
-      console.log(`Loading products ${productNameFilter}`);
+      console.log(`Loading products ${$event}`);
     }, err => {
       console.log(`Error loading products ${err}`);
     });
+  }
+
+  sortProduct($event: Sort) {
   }
 }

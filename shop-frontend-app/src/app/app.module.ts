@@ -10,7 +10,8 @@ import { ProductFilterComponent } from './component/product-filter/product-filte
 import { PaginationComponent } from './component/pagination/pagination.component';
 import { ProductGalleryComponent } from './component/product-gallery/product-gallery.component';
 import {HttpClientModule} from "@angular/common/http";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { ProductSortComponent } from './component/product-sort/product-sort.component';
 
 @NgModule({
   declarations: [
@@ -20,14 +21,16 @@ import {FormsModule} from "@angular/forms";
     NavbarComponent,
     ProductFilterComponent,
     PaginationComponent,
-    ProductGalleryComponent
+    ProductGalleryComponent,
+    ProductSortComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    FormsModule,
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
