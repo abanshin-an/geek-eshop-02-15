@@ -6,18 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.geekbrains.controller.dto.ProductDto;
-import ru.geekbrains.service.CategoryService;
-import ru.geekbrains.service.ManufacturerService;
 import ru.geekbrains.service.ProductService;
 
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Optional;
 @Tag(name="Product", description="Product API description")
 @RestController
@@ -34,12 +27,14 @@ public class ProductController {
         this.productService = productService;
     }
     @Operation(
-            summary = "Список торавро",
+            summary = "Список товаров",
             description = "Получение списка товаров по заданному фильтру с разбиением на страницы"
     )
+
     @GetMapping("/all")
     public Page<ProductDto> findAll(
             @RequestParam("categoryId") Optional<Long> categoryId,
+            @RequestParam("manifacturerIds") Optional<ArrayList<Long>> manifacturerIds,
             @RequestParam("productNameFilter") Optional<String> namePattern,
             @RequestParam("minPrice") Optional<String> minPrice,
             @RequestParam("minPrice") Optional<String> maxPrice,
@@ -48,8 +43,9 @@ public class ProductController {
             @RequestParam("sort") Optional<String> sortField,
             @RequestParam("dir") Optional<String> dir
     ) {
-        return productService.findAll(
+        Page<ProductDto> p= productService.findAll(
                 categoryId,
+                manifacturerIds,
                 namePattern,
                 minPrice,
                 maxPrice,
@@ -57,14 +53,7 @@ public class ProductController {
                 size.orElse(5),
                 sortField.filter(fld -> !fld.isBlank()).orElse("id"),
                 dir);
-    }
-
-    @ExceptionHandler
-    public ModelAndView notFoundExceptionHandler(NotFoundException ex) {
-        ModelAndView modelAndView = new ModelAndView("not_found");
-        modelAndView.addObject("message", ex.getMessage());
-        modelAndView.setStatus(HttpStatus.NOT_FOUND);
-        return modelAndView;
+        return p;
     }
 
 }

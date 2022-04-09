@@ -31,8 +31,8 @@
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col" th:replace="fragments/sort_header :: sort_header_user ('Id', 'id')"></th>
-                    <th scope="col" th:replace="fragments/sort_header :: sort_header_user ('Username', 'username')"></th>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header('users', 'Id', 'id')"></th>
+                    <th scope="col" th:replace="fragments/sort_header :: sort_header§('users', 'Username', 'username')"></th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -56,12 +56,16 @@
             </table>
         </div>
 
-        <div th:replace="fragments/paginator.html :: paginator(${users}, ~{::paginatorLink})">
+        <div th:replace="fragments/paginator.html :: paginator(${users}, ~{::paginatorLinkPrev}, ~{::paginatorLink}, ~{::paginatorLinkNext})">
             <a th:fragment="paginatorLink" class="page-link"
                th:text="${num}"
-               th:href="@{/user(page=${num}, size=${data.size},
-               usernameFilter=${param.usernameFilter}, sortField=${param.sortField})}">1</a>
+               th:href="@{/users(nameFilter=${param.usernameFilter}, page=${num}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">1</a>
+            <a th:fragment="paginatorLinkPrev" class="page-link"
+               th:href="@{/users(nameFilter=${param.usernameFilter}, page=${T(Math).max(users.number,0)}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Previous</a>
+            <a th:fragment="paginatorLinkNext" class="page-link"
+               th:href="@{/users(nameFilter=${param.usernameFilter}, page=${T(Math).max(users.number,0)}, size=${param.size}, sort=${param.sort}, dir=${param.dir})}">Next</a>
         </div>
+
     </div>
 </div>
 

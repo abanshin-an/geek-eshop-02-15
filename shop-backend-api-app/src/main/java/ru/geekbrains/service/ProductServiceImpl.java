@@ -21,6 +21,7 @@ import ru.geekbrains.persist.model.Product;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,11 +38,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> findAll(Optional<Long> categoryId, Optional<String> namePattern, Optional<String> minPrice,
-                                    Optional<String> maxPrice, Integer page, Integer size, String sortField, Optional<String> dir) {
+    public Page<ProductDto> findAll(Optional<Long> categoryId,
+                                    Optional<ArrayList<Long>> manufacturerIds,
+                                    Optional<String> namePattern,
+                                    Optional<String> minPrice,
+                                    Optional<String> maxPrice,
+                                    Integer page, Integer size,
+                                    String sortField,
+                                    Optional<String> dir) {
         Specification<Product> spec = Specification.where(null);
         if (categoryId.isPresent() && categoryId.get() != -1) {
             spec = spec.and(ProductSpecification.byCategory(categoryId.get()));
+        }
+        if (manufacturerIds.isPresent() && manufacturerIds.get().size() > 0) {
+            spec = spec.and(ProductSpecification.byManufacturerId(manufacturerIds.get()));
         }
         if (namePattern.isPresent()) {
             spec = spec.and(ProductSpecification.byName(namePattern.get()));

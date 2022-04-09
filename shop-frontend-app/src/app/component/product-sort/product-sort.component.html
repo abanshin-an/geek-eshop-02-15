@@ -1,0 +1,16 @@
+<div class="form-inline">
+  <label class="form-label">Sort by&nbsp;&nbsp;</label>
+  <select class="form-control" >
+    <option *ngFor="let c of orders" [ngValue]="c.id">{{c.name}}</option>
+  </select>
+  &nbsp;&nbsp;
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" (click)="setDir('asc')" name="orderDir" id="inlineRadio1" >
+    <label class="form-check-label" for="inlineRadio1">ASC</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" [defaultChecked]="true" type="radio" (click)="setDir('asc')" name="orderDir" id="inlineRadio2"
+           value="desc">
+    <label class="form-check-label" for="inlineRadio2">DESC</label>
+  </div>
+</div>
