@@ -1,6 +1,8 @@
 package ru.geekbrains.controller.dto;
 
-public class ManufacturerDto {
+import java.io.Serializable;
+
+public class ManufacturerDto implements Serializable {
 
     private Long id;
 
